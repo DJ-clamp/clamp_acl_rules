@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
 
 	"gopkg.in/ini.v1"
 )
@@ -47,21 +49,18 @@ func main() {
 	}
 
 	fmt.Println("done!")
+	aferHandler("../Clash/dst/demo.ini")
+}
 
-	// cfg, err := ini.ShadowLoad("../Clash/dst/demo.ini")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// content, err := cfg.GetSection(CUSTOM)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// keys := content.Keys()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// fmt.Println(keys[1])
+func aferHandler(filename string) {
+
+	b, err := os.ReadFile(filename)
+	if err != nil {
+		fmt.Print(err)
+	}
+	templatefile := strings.ReplaceAll(string(b), `"""`, "")
+	err = os.WriteFile(filename, []byte(templatefile), 0666)
+	if err != nil {
+		fmt.Print(err)
+	}
 }
