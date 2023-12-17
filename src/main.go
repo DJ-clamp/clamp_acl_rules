@@ -34,12 +34,34 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
-	// content.NewKey(`asdasd`, `🚀 节点选择`select`)
+	cc, err := cfg.GetSection("")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	cc.SetBody("asdasdd")
+	fmt.Println(cc.Body())
 	if err = cfg.SaveTo("../Clash/dst/demo.ini"); err != nil {
 		fmt.Println(err)
 		return
 	}
+
 	fmt.Println("done!")
 
+	// cfg, err := ini.ShadowLoad("../Clash/dst/demo.ini")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// content, err := cfg.GetSection(CUSTOM)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// keys := content.Keys()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// fmt.Println(keys[1])
 }
