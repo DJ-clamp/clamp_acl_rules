@@ -1,11 +1,14 @@
 package main
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // 规则片段结构
 type Rule struct {
-	Proxy_name string // 代理规则名称
-	Url        string // 片段导入地址
+	Proxy_name NodeName // 代理规则名称
+	Url        string   // 片段导入地址
 }
 type Rules []string // 规则列表
 // 规则设置表
@@ -17,83 +20,54 @@ type PROXY_OPTION struct {
 	OVERWRITE_ORIGINAL_RULES bool `ini:"overwrite_original_rules"`
 }
 
-//规则表 数组形式
+// 规则表 数组形式
 var rule_lists = []Rule{
-	{"🎯 全球直连", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list"},
-	{"🎯 全球直连", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/UnBan.list"},
-	{"🛑 广告拦截", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list"},
-	{"🍃 应用净化", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list"},
-	{"📢 谷歌FCM", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/GoogleFCM.list"},
-	{"🎯 全球直连", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/GoogleCN.list"},
-	{"🎯 全球直连", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/SteamCN.list"},
-	{"Ⓜ️ 微软Bing", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Bing.list"},
-	{"Ⓜ️ 微软云盘", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/OneDrive.list"},
-	{"Ⓜ️ 微软服务", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list"},
-	{"🍎 苹果服务", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list"},
-	{"📲 电报消息", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Telegram.list"},
-	{"💬 OpenAi", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/OpenAi.list"},
-	{"🎶 网易音乐", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/NetEaseMusic.list"},
-	{"🎮 游戏平台", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Epic.list"},
-	{"🎮 游戏平台", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Origin.list"},
-	{"🎮 游戏平台", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Sony.list"},
-	{"🎮 游戏平台", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Steam.list"},
-	{"🎮 游戏平台", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Nintendo.list"},
-	{"📹 油管视频", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/YouTube.list"},
-	{"🎥 奈飞视频", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Netflix.list"},
-	{"📺 巴哈姆特", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bahamut.list"},
-	{"📺 哔哩哔哩", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/BilibiliHMT.list"},
-	{"📺 哔哩哔哩", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bilibili.list"},
-	{"🌏 国内媒体", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaMedia.list"},
-	{"🌍 国外媒体", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyMedia.list"},
-	{"🚀 节点选择", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list"},
-	{"🎯 全球直连", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"},
-	{"🎯 全球直连", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list"},
-	{"🎯 全球直连", "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Download.list"},
-	{"🎯 全球直连", "[]GEOIP,CN"},
-	{"🐟 漏网之鱼", "[]FINAL"},
+	{NS_LOCALAREANETWORK, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list"},
+	{NS_LOCALAREANETWORK, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/UnBan.list"},
+	{NS_BANAD, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list"},
+	{NS_BANPROGRAM_AD, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list"},
+	{NS_GOOGLEFCM, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/GoogleFCM.list"},
+	{NS_LOCALAREANETWORK, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/GoogleCN.list"},
+	{NS_LOCALAREANETWORK, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/SteamCN.list"},
+	{NS_BING, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Bing.list"},
+	{NS_ONEDRIVE, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/OneDrive.list"},
+	{NS_MICROSOFT, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list"},
+	{NS_APPLE, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list"},
+	{NS_TELEGRAM, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Telegram.list"},
+	{NS_OPENAI, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/OpenAi.list"},
+	{NS_NETEASEMUSIC, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/NetEaseMusic.list"},
+	{NS_GAME_STORE, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Epic.list"},
+	{NS_GAME_STORE, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Origin.list"},
+	{NS_GAME_STORE, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Sony.list"},
+	{NS_GAME_STORE, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Steam.list"},
+	{NS_GAME_STORE, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Nintendo.list"},
+	{NS_YOUTUBE, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/YouTube.list"},
+	{NS_NETFLIX, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Netflix.list"},
+	{NS_BAHAMUT, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bahamut.list"},
+	{NS_BILIBILI, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/BilibiliHMT.list"},
+	{NS_BILIBILI, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bilibili.list"},
+	{NS_CHINAMEDIA, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaMedia.list"},
+	{NS_PROXYMEDIA, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyMedia.list"},
+	{NS_PROXYGFWLIST, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list"},
+	{NS_LOCALAREANETWORK, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"},
+	{NS_LOCALAREANETWORK, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list"},
+	{NS_LOCALAREANETWORK, "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Download.list"},
+	{NS_LOCALAREANETWORK, "[]GEOIP,CN"},
+	{NS_FINAL, "[]FINAL"},
 }
 
-// 设置分组表
-type PROXY_GROUP string
-
-var proxy_group_lists = []PROXY_GROUP{
-	"🚀 节点选择`select`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT",
-	"🚀 手动切换`select`.*",
-	"📲 电报消息`select`[]🚀 节点选择`[]🇸🇬 狮城节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT",
-	"💬 OpenAi`select`[]🚀 节点选择`[]🇸🇬 狮城节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT",
-	"📹 油管视频`select`[]🚀 节点选择`[]🇸🇬 狮城节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT",
-	"🎥 奈飞视频`select`[]🎥 奈飞节点`[]🚀 节点选择`[]🇸🇬 狮城节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT",
-	"📺 巴哈姆特`select`[]🇨🇳 台湾节点`[]🚀 节点选择`[]🚀 手动切换`[]DIRECT",
-	"📺 哔哩哔哩`select`[]🎯 全球直连`[]🇨🇳 台湾节点`[]🇭🇰 香港节点",
-	"🌍 国外媒体`select`[]🚀 节点选择`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT",
-	"🌏 国内媒体`select`[]DIRECT`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🚀 手动切换",
-	"📢 谷歌FCM`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换",
-	"Ⓜ️ 微软Bing`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换",
-	"Ⓜ️ 微软云盘`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换",
-	"Ⓜ️ 微软服务`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换",
-	"🍎 苹果服务`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换",
-	"🎮 游戏平台`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换",
-	"🎶 网易音乐`select`[]DIRECT`[]🚀 节点选择`(网易|音乐|解锁|Music|NetEase)",
-	"🎯 全球直连`select`[]DIRECT`[]🚀 节点选择",
-	"🛑 广告拦截`select`[]REJECT`[]DIRECT",
-	"🍃 应用净化`select`[]REJECT`[]DIRECT",
-	"🐟 漏网之鱼`select`[]🚀 节点选择`[]DIRECT`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换",
-	"🇭🇰 香港节点`select`(港|HK|hk|Hong Kong|HongKong|hongkong)",
-	"🇯🇵 日本节点`select`(日本|川日|东京|大阪|泉日|埼玉|沪日|深日|[^-]日|JP|Japan)",
-	"🇺🇲 美国节点`select`(美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|United States)",
-	"🇸🇬 狮城节点`select`(新加坡|坡|狮城|SG|Singapore)",
-	"🇨🇳 台湾节点`select`(台|新北|彰化|TW|Taiwan)",
-	"🇰🇷 韩国节点`select`(KR|Korea|KOR|首尔|韩|韓)",
-	"🌍 欧洲及中东地区`select`(英|法|德|阿姆斯特丹|荷兰|土耳其|比利时|瑞士)",
-	"🎥 奈飞节点`select`(NF|奈飞|解锁|Netflix|NETFLIX|Media)",
+// 生成ruleset字符串
+func GenerateRuleSetContent[T any](nodename T) string {
+	// _, ok := nodename.(string)
+	return fmt.Sprintf("%s", nodename)
 }
 
 func (r Rule) GenerateRule() string {
-	return strings.Join([]string{r.Proxy_name, r.Url}, ",")
+	return strings.Join([]string{GenerateRuleSetContent(r.Proxy_name), r.Url}, ",")
 }
 
 // 从已知规则表中查询规则并导出字符串，如果查询不到则返回空
-func (r Rule) GetRule(proxy_name string) string {
+func (r Rule) GetRule(proxy_name NodeName) string {
 	if len(rule_lists) <= 0 {
 		return ""
 
